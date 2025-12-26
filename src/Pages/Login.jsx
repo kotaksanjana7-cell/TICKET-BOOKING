@@ -22,10 +22,10 @@ const Login = () => {
   const validate = () => {
     const newErrors = {};
 
-    if (!form.userName.trim()) {
-      newErrors.userName = "Email is required";
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      newErrors.userName = "Enter a valid email";
+      newErrors.email = "Enter a valid email";
     }
 
     if (!form.password.trim()) {
@@ -49,6 +49,7 @@ const Login = () => {
       console.log(error);
     }
   }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-sm bg-white rounded-2xl shadow p-6 text-center">
@@ -94,14 +95,14 @@ const Login = () => {
             <label className="text-xs text-gray-600 font-medium">Email</label>
             <input
               type="email"
-              name="userName"
+              name="email"
               value={form.email}
               onChange={handleInputchange}
               placeholder="you@example.com"
               className="w-full mt-1 px-4 py-3 rounded-full border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
-          {errors.userName && <p className="text-red-500 text-xs mt-1">{errors.userName}</p>}
+          {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
 
           <div>
             <label className="text-xs text-gray-600 font-medium">Password</label>

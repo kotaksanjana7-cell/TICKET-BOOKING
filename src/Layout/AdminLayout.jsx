@@ -1,4 +1,3 @@
-import React from 'react'
 import Sidebar from '../Pages/AdminLayout/Sidebar'
 import { Outlet } from 'react-router-dom'
 
