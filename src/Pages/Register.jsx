@@ -42,7 +42,7 @@ const Register = () => {
 
     const handleSubmit = async () => {
         if (!validate()) return;
-        const res = await Apiservice.post("users/add", { ...formData, role: "user" });
+        const res = await Apiservice.post("user/add", { ...formData, role: "user" });
         setFormData({
             name: "",
             email: "",
