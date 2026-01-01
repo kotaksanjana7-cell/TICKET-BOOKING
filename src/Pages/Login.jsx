@@ -5,7 +5,7 @@ import { Apiservice } from "../services/Apiservice";
 
 const Login = () => {
   const [role, setRole] = useState("user");
-  const [form, setForm] = useState({ userName: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate()
 
@@ -22,10 +22,10 @@ const Login = () => {
   const validate = () => {
     const newErrors = {};
 
-    if (!form.userName.trim()) {
-      newErrors.userName = "Username is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.userName)) {
-      newErrors.userName = "Enter a valid email";
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      newErrors.email = "Enter a valid email";
     }
 
     if (!form.password.trim()) {
@@ -39,8 +39,6 @@ const Login = () => {
   };
 
   const handleLogin = async() => {
-    console.log('login clicked');
-    
     if (!validate()) return;
     try {
       const res = await Apiservice.post("user/login", { ...form, role });
@@ -97,14 +95,14 @@ const Login = () => {
             <label className="text-xs text-gray-600 font-medium">Email</label>
             <input
               type="email"
-              name="userName"
-              value={form.userName}
+              name="email"
+              value={form.email}
               onChange={handleInputchange}
               placeholder="you@example.com"
               className="w-full mt-1 px-4 py-3 rounded-full border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
-          {errors.userName && <p className="text-red-500 text-xs mt-1">{errors.userName}</p>}
+          {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
 
           <div>
             <label className="text-xs text-gray-600 font-medium">Password</label>

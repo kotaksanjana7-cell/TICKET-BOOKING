@@ -18,6 +18,10 @@ import AuthGuard from './Guards/AuthGuard';
 function App() {
   const router = createBrowserRouter([
     {
+      path:"/",
+      element: <DefaultRoute />
+    },
+    {
       path: "/login",
       element: <AuthGuard requiredAuth={false}><Login /></AuthGuard>
     },
@@ -25,33 +29,28 @@ function App() {
       path: "/register",
       element: <AuthGuard requiredAuth={false}><Register /></AuthGuard>
     },
-    {
-      path:"/",
-      element: <DefaultRoute />
-    },
+    
+{
+  path: "/user",
+  element: <AuthGuard requiredAuth={true} allowedRoles={["user"]}><UserLayout /></AuthGuard>,
+  children: [
+    { path: "dashboard", element: <UserDashboard /> },
+    { path: "my-bookings", element: <MyBookings /> },
+    { path: "event", element: <UserEvent /> },
+    { path: "profile", element: <Profile /> },
+  ]
+},
 
-    // User Routes
-    {
-      path:"user",
-      element: <AuthGuard requiredAuth={true} allowedRoles={["user"]}><UserLayout /></AuthGuard>,
-      children: [
-        {path: "dashboard", element: <UserDashboard />},
-        {path: "my-bookings", element: <MyBookings />},
-        {path: "event", element: <UserEvent />},
-        {path: "profile", element: <Profile/>   }
-      ]
-    },
+{
+  path: "/admin",
+  element: <AuthGuard requiredAuth={true} allowedRoles={["admin"]}><AdminLayout /></AuthGuard>,
+  children: [
+    { path: "dashboard", element: <AdminDashboard /> },
+    { path: "bookings", element: <Booking /> },
+    { path: "event", element: <AdminEvent /> },
+  ]
+},
 
-    // Admin routes
-    {
-      path:"admin",
-      element: <AuthGuard requiredAuth={true} allowedRoles={["admin"]}><AdminLayout /></AuthGuard>,
-      children: [
-        {path: "dashboard", element: <AdminDashboard/>},
-        {path: "bookings", element: <Booking />},
-        {path: "event", element: <AdminEvent />},
-      ]
-    }
   ]);
 
   return <RouterProvider router={router} />;
