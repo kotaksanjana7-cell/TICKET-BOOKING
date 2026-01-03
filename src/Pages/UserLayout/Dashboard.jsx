@@ -3,9 +3,8 @@ import React from 'react'
 const UserDashboard = () => {
   return (
     <div>
-      <p>user dashboard</p>
+      <h1>USER DASHBOARD</h1>
     </div>
   )
 }
-
 export default UserDashboard

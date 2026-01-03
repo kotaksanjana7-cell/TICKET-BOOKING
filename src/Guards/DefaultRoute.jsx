@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
 
 const DefaultRoute = () => {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role")?.toLowerCase();
+  const authData = JSON.parse(localStorage.getItem("authData"));
+  const role = authData?.role?.toLowerCase();
 
-  if (!token) {
+  if (!authData) {
     return <Navigate to="/login" replace />;
   }
 
@@ -16,6 +16,7 @@ const DefaultRoute = () => {
     return <Navigate to="/user/dashboard" replace />;
   }
 
+  // Fallback
   return <Navigate to="/login" replace />;
 };
 

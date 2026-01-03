@@ -1,22 +1,29 @@
-import { Navigate } from "react-router-dom";
-const AuthGuard = ({ requiredAuth, allowedRoles, children }) => {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+import { Navigate, useLocation } from "react-router-dom";
 
-  // If user must NOT be logged in
-  if (!requiredAuth && token) {
-    if (role === "admin") return <Navigate to="/admin/dashboard" replace />;
-    if (role === "user") return <Navigate to="/user/dashboard" replace />;
+const AuthGuard = ({
+  children,
+  requiredAuth = true,
+  allowedRoles = [],
+  redirect = "/login"
+}) => {
+  const location = useLocation();
+  const authData = JSON.parse(localStorage.getItem("authData"));
+  const isAuthenticated = !!authData;
+  const userRole = authData?.role?.toLowerCase();
+
+  // Not logged in
+  if (requiredAuth && !isAuthenticated) {
+    return <Navigate to={redirect} state={{ from: location }} replace />;
   }
 
-  // If user must be logged in but not
-  if (requiredAuth && !token) {
-    return <Navigate to="/login" replace />;
+  // Logged in but shouldn't access auth pages
+  if (!requiredAuth && isAuthenticated) {
+    return <Navigate to="/" replace />;
   }
 
-  // If logged in but role does not match
-  if (requiredAuth && allowedRoles && !allowedRoles.includes(role)) {
-    return <Navigate to="/login" replace />;
+  // Role not allowed
+  if (allowedRoles.length && !allowedRoles.includes(userRole)) {
+    return <Navigate to="/" replace />;
   }
 
   return children;
