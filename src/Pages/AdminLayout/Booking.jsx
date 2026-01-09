@@ -29,20 +29,6 @@ const EditBookingModal = ({ isEditOpen, selectedBooking, closeModal, handleChang
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select
-              name="status"
-              value={selectedBooking.status || ''}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
-              <option value="UPCOMING">Upcoming</option>
-              <option value="LIVE">Live</option>
-              <option value="COMPLETED">Completed</option>
-            </select>
-          </div>
-
           <button
             onClick={() => handleSave(selectedBooking)}
             className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition"
@@ -92,9 +78,6 @@ export default function ManageBookings() {
 
   // UI Logic States (No Functional Logic)
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [eventFilter, setEventFilter] = useState("");
-
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
@@ -126,13 +109,6 @@ export default function ManageBookings() {
     }
   };
 
-  const handleExport = () => {
-    console.log("Export button clicked");
-  }
-
-  // Extract unique events for the UI dropdown
-  const uniqueEvents = [...new Set(bookings.map((b) => b.event))];
-
   return (
     <div className="w-full p-6 bg-gray-50 min-h-screen">
       {/* Header */}
@@ -162,47 +138,7 @@ export default function ManageBookings() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-
-          {/* Status Filter */}
-          <div className="relative">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="appearance-none px-5 py-2 pr-10 rounded-full border border-gray-200 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-200"
-            >
-              <option value="">All Status</option>
-              <option value="UPCOMING">Upcoming</option>
-              <option value="LIVE">Live</option>
-              <option value="COMPLETED">Completed</option>
-            </select>
-            <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-          </div>
-
-          {/* Event Filter */}
-          <div className="relative">
-            <select
-              value={eventFilter}
-              onChange={(e) => setEventFilter(e.target.value)}
-              className="appearance-none px-5 py-2 pr-10 rounded-full border border-gray-200 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-200"
-            >
-              <option value="">All Events</option>
-              {uniqueEvents.map((event, index) => (
-                event && (
-                  <option key={index} value={event}>
-                    {event}
-                  </option>
-                )
-              ))}
-            </select>
-            <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-          </div>
-
         </div>
-
-        <button className="cursor-pointer flex items-center gap-2 px-5 py-2 rounded-full border border-gray-200 bg-white shadow-sm hover:bg-gray-50 transition"
-          onClick={handleExport}>
-          <Download size={16} /> Export
-        </button>
       </div>
 
       {/* Table */}
@@ -216,7 +152,6 @@ export default function ManageBookings() {
               <th className="p-4 text-left">Date</th>
               <th className="p-4 text-left">Time</th>
               <th className="p-4 text-left">Tickets</th>
-              <th className="p-4 text-left">Status</th>
               <th className="p-4 text-center">Actions</th>
             </tr>
           </thead>
@@ -233,21 +168,6 @@ export default function ManageBookings() {
                 <td className="p-4 text-gray-600">{booking.date}</td>
                 <td className="p-4 text-gray-600">{booking.time}</td>
                 <td className="p-4 text-gray-600">{booking.tickets}</td>
-
-                <td className="p-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold capitalize 
-                                        ${booking.status === "UPCOMING"
-                        ? "bg-blue-100 text-blue-700"
-                        : booking.status === "LIVE"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-700"
-                      }`}
-                  >
-                    {booking.status.toLowerCase()}
-                  </span>
-                </td>
-
                 <td className="p-4 text-center flex items-center justify-center gap-2">
                   <button
                     onClick={() => openEditModal(booking)}

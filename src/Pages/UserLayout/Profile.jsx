@@ -12,12 +12,11 @@ const Profile = () => {
   const getUserProfile = async () => {
     try {
       setLoading(true)
-      const response = await Apiservice.get(`/users/${id}`)
+      const response = await Apiservice.get(`/user/${id}`)
       setUser(response.data)
       setFormData({
         name: response.data.name,
         email: response.data.email,
-        memberSince: response.data.createdAt.split("T")[0],
         phone: response.data.phone
       })
     }
@@ -30,7 +29,7 @@ const Profile = () => {
   }
 
   useEffect(() => {
-    // getUserProfile()
+    getUserProfile()
   }, []);
 
   const handleChange = (e) => {
@@ -39,7 +38,7 @@ const Profile = () => {
   };
 
   const handleSave = async () => {
-    await Apiservice.put(`/users/update/${id}`, formData)
+    await Apiservice.put(`/user/${id}`, formData)
     setIsEditing(false);
   };
 
@@ -131,20 +130,6 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
               className="w-full px-3 py-2 border-gray-300 rounded-xl border bg-gray-50 text-sm disabled:opacity-70"
-            />
-          </div>
-
-          <div>
-            <label className="flex items-center gap-2 text-gray-600 font-medium mb-1">
-              <Calendar size={16} className="text-orange-500" /> Member Since
-            </label>
-            <input
-              type="date"
-              value={formData?.memberSince}
-              disabled={!isEditing}
-              name="memberSince"
-              onChange={handleChange}
-              className="w-full px-3 py-2 rounded-xl border-gray-300 border text-sm bg-gray-50 disabled:opacity-70"
             />
           </div>
 

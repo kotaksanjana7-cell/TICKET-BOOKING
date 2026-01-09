@@ -1,20 +1,14 @@
 import { useState, useEffect } from "react";
 import { Calendar, Clock, Users } from "lucide-react";
 import BookingModal from "../../Components/BookingModal.jsx";
-
-// Simple helper to mimic getStatus behavior if needed for future logic, 
-// though currently we just display static events.
-const getStatus = (dateStr, timeStr) => {
-  // Placeholder logic for status
-  return "UPCOMING";
-};
+import { Apiservice } from "../../services/Apiservice.js";
 
 const Events = () => {
 
   // Mocking user for static version if needed, or safer access
   const getUserId = () => {
     try {
-      const user = JSON.parse(localStorage.getItem('authDetail-tickethub'));
+      const user = JSON.parse(localStorage.getItem('authData'));
       return user?.id;
     } catch (e) {
       return null;
@@ -26,36 +20,16 @@ const Events = () => {
   const [open, setOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-  // Static Data
-  const staticEvents = [
-    {
-      id: 1,
-      title: "Tech Conference 2025",
-      description: "Join us for the biggest tech conference of the year featuring industry leaders.",
-      date: "2025-10-15T09:00:00",
-      time: "09:00 AM",
-      capacity: 200,
-      bookingCount: 150,
-      price: 299,
-    },
-  ];
-
   const loadEvents = async () => {
-    // SIMULATED: const res = awaitinitials ApiService.post("/events/list", {})
-
-    const formattedData = staticEvents.map((event) => {
+    const res = await Apiservice.get("event/list")
+    const formattedData = res.data.map((event) => {
       const isoDate = event.date;
       const date = new Date(isoDate);
       const options = { month: "short", day: "2-digit", year: "numeric" };
       const formatted = date.toLocaleDateString("en-US", options);
-
-      // Logic regarding status counts removed as dashboard stats are not part of this component's scope
-
       return { ...event, date: formatted };
     });
-
-    setEvents(formattedData);
-    // Dashboard statistics logic removed as it relied on external state/props not present.
+    setEvents(formattedData)
   };
 
   useEffect(() => {
@@ -63,20 +37,15 @@ const Events = () => {
   }, []);
 
   const handleBooking = async (data) => {
-    // SIMULATED: const response = await ApiService.post("/tickets/add", payload)
-
     const payload = {
       eventId: data.id,
       userId: id,
-      price: data.total,
-      noOfTickets: data.ticketCount,
+      price: Number(data.total),
       seats: data.seats
     };
-
+    const response = await Apiservice.post("/ticket/create", payload)
     console.log("Booking Payload (Static):", payload);
-    alert("Booking Successful (Static Mode)");
-
-    // loadEvents(); // No need to reload for static
+    alert(response.status.description);
     setOpen(false);
   }
 
@@ -107,7 +76,7 @@ const Events = () => {
                       <Clock size={16} /> {event.time}
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users size={16} /> {parseInt(event.bookingCount)}/{event.capacity} booked
+                      <Users size={16} /> {parseInt(event.booked)}/{event.capacity} booked
                     </div>
                   </div>
 
@@ -115,12 +84,12 @@ const Events = () => {
                     {/* Availability Bar */}
                     <div className="flex justify-between text-xs text-gray-500 mb-1">
                       <span>Availability</span>
-                      <span>{Math.max(0, 100 - Math.round((parseInt(event.bookingCount) / event.capacity) * 100))}%</span>
+                      <span>{Math.max(0, 100 - Math.round((parseInt(event.booked) / event.capacity) * 100))}%</span>
                     </div>
                     <div className="w-full h-2 rounded-full bg-gray-200">
                       <div
                         className="h-2 bg-orange-500 rounded-full"
-                        style={{ width: `${Math.min(100, Math.max(0, 100 - (parseInt(event.bookingCount) / event.capacity) * 100))}%` }}
+                        style={{ width: `${Math.min(100, Math.max(0, 100 - (parseInt(event.booked) / event.capacity) * 100))}%` }}
                       ></div>
                     </div>
                   </div>
